@@ -271,7 +271,7 @@ bool CallGraphPass::doFinalization(Module *M) {
 
 			if (CI->isIndirectCall()) {
 				Ctx->NumIndirectCallTargets += FS.size();
-				//printTargets(Ctx->Callees[CI], CI);
+				printTargets(Ctx->Callees[CI], CI);
 			}
 		}
 

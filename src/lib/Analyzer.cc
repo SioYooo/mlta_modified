@@ -117,6 +117,31 @@ void PrintResults(GlobalContext *GCtx) {
 	}
 	OP << "\n@@ Total number of final callees: " << totalsize << ".\n";
 
+	OP << "\nAll posible indirect calls and their tagets" << ".\n";
+	for (auto IC : GCtx->IndirectCallInsts) {
+		OP << "Indirect Call: " << *IC << "\n";
+		auto &targetFuncs = GCtx->Callees[IC];
+		OP << "Possible Targets: " << targetFuncs.size() << "\n";
+		for (auto targetFunc : targetFuncs) {
+			// 获取并输出目标函数名
+			StringRef targetFuncName = targetFunc->getName();
+			OP << "Possible target function: " << targetFuncName.str() << "\n";
+			
+			// 获取并输出目标函数的参数类型
+			OP << "\tArguments: ";
+			for (Function::arg_iterator arg_it = targetFunc->arg_begin(); arg_it != targetFunc->arg_end(); ++arg_it) {
+				Argument *argument = &*arg_it;
+				Type *argType = argument->getType();
+				OP << *argType << ", ";
+			}
+			OP << "\n";
+			
+			// 获取并输出目标函数的返回值类型
+			Type *returnType = targetFunc->getReturnType();
+			OP << "\tReturn Type: " << *returnType << "\n";
+		}
+	}
+
 	OP<<"############## Result Statistics ##############\n";
 	//cout<<"# Ave. Number of indirect-call targets: \t"<<std::setprecision(5)<<AveIndirectTargets<<"\n";
 	OP<<"# Number of indirect calls: \t\t\t"<<GCtx->IndirectCallInsts.size()<<"\n";   
